@@ -1,9 +1,9 @@
 ---
 name: agent-integrator
-description: helps implement Buildship agent into frontend apps using the bs-agent npm package
+description: helps implement Buildship agent into frontend apps using the @buildship-ai/agent npm package
 license: MIT
 metadata:
-  author: buildship
+  author: "shams-mosowi"
   repository: "https://github.com/buildship/agent-skills"
   version: "1.0.0"
   keywords: "ai, agent, skill, buildship, sdk, streaming, react, chat"
@@ -27,20 +27,20 @@ A type-safe TypeScript SDK for integrating BuildShip agents into any JavaScript/
 ## Install
 
 ```bash
-npm install bs-agent
+npm install @buildship-ai/agent
 ```
 
 The package exposes two entry points:
 
 ```typescript
-import { ... } from "bs-agent/core";   // Vanilla JS/TS — works anywhere
-import { ... } from "bs-agent/react";   // React hooks, context & components
+import { ... } from "@buildship-ai/agent/core";   // Vanilla JS/TS — works anywhere
+import { ... } from "@buildship-ai/agent/react";   // React hooks, context & components
 ```
 
 ## Quick Start — Vanilla JS/TS
 
 ```typescript
-import { BuildShipAgent, z } from "bs-agent/core";
+import { BuildShipAgent, z } from "@buildship-ai/agent/core";
 
 const agent = new BuildShipAgent({
   agentId: "YOUR_AGENT_ID",
@@ -59,7 +59,7 @@ const session = await agent.execute("Hello!", {
 ## Quick Start — React
 
 ```tsx
-import { AgentContextProvider, useAgent } from "bs-agent/react";
+import { AgentContextProvider, useAgent } from "@buildship-ai/agent/react";
 
 function App() {
   return (
@@ -147,7 +147,7 @@ Data field accepts: HTTP URLs (`https://...`), Data URLs (`data:image/png;base64
 Register tools the agent can invoke on the client side. See [Client Tools Reference](references/client-tools.md) for full details.
 
 ```typescript
-import { BuildShipAgent, z } from "bs-agent/core";
+import { BuildShipAgent, z } from "@buildship-ai/agent/core";
 
 const agent = new BuildShipAgent({ agentId: "..." });
 

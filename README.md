@@ -10,7 +10,7 @@ Agent Skills are folders of instructions, scripts, and resources that agents can
 <!-- START:Available-Skills -->
 | Skill | Description |
 | ----- | ----------- |
-| [agent-integrator](./skills/agent-integrator) | helps implement Buildship agent into frontend apps using the bs-agent npm pac... |
+| [agent-integrator](./skills/agent-integrator) | helps implement Buildship agent into frontend apps using the @buildship-ai/ag... |
 <!-- END:Available-Skills -->
 
 ## Installation

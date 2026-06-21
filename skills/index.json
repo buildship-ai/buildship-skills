@@ -2,7 +2,7 @@
   "skills": [
     {
       "name": "agent-integrator",
-      "description": "helps implement Buildship agent into frontend apps using the bs-agent npm package",
+      "description": "helps implement Buildship agent into frontend apps using the @buildship-ai/agent npm package",
       "files": [
         "SKILL.md",
         "references/client-tools.md",

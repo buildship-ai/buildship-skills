@@ -4,12 +4,12 @@ description: "BuildShipAgent class, AgentSession, stream callbacks, events, mult
 tags: [core, BuildShipAgent, AgentSession, execute, session, streaming, SSE, callbacks, events, abort, multimodal, ContentPart, ToolType]
 ---
 
-# Core API Reference (`bs-agent/core`)
+# Core API Reference (`@buildship-ai/agent/core`)
 
 The core module provides a class-based API that works in any JavaScript environment — Node.js, browser, Edge Runtime, etc.
 
 ```typescript
-import { BuildShipAgent, z } from "bs-agent/core";
+import { BuildShipAgent, z } from "@buildship-ai/agent/core";
 ```
 
 ## BuildShipAgent
@@ -159,7 +159,7 @@ interface StreamCallbacks {
 
 ## Stream Events
 
-All events share a `meta` object with `executionId` and `sequence`.
+All events share a `meta` object with `executionId`, `sequence`, and `agentId` (the ID of the agent that produced the event — changes after handoffs).
 
 | Event Type | Description | Data |
 |---|---|---|
@@ -188,6 +188,21 @@ session.execute("Write a long essay...", {
 });
 ```
 
+## Scoping Tools to Specific Agents
+
+In multi-agent setups, you can restrict a client tool to specific server-side agents or subagents using `targetAgentIds`. When omitted, the tool is available to all agents.
+
+```typescript
+agent.registerClientTool({
+  name: "admin_panel",
+  description: "Show an admin-only panel",
+  parameters: z.object({ section: z.string() }),
+  handler: (args) => showAdminPanel(args.section),
+  // Only the admin agent and supervisor agent can call this tool
+  targetAgentIds: ["admin-agent-id", "supervisor-agent-id"],
+});
+```
+
 ## Best Practices
 
 - Always provide an `onError` callback to handle stream failures gracefully.
@@ -195,3 +210,4 @@ session.execute("Write a long essay...", {
 - For multimodal input, prefer HTTP URLs over base64 when possible to reduce payload size.
 - Use `abort()` to cancel long-running streams and free resources.
 - Register client tools before calling `execute()` so the agent knows they are available.
+- Use `targetAgentIds` to scope tools to specific agents in multi-agent setups.

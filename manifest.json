@@ -17,7 +17,7 @@
   "skills": [
     {
       "name": "agent-integrator",
-      "description": "helps implement Buildship agent into frontend apps using the bs-agent npm package",
+      "description": "helps implement Buildship agent into frontend apps using the @buildship-ai/agent npm package",
       "version": "1.0.0",
       "source": "./skills/agent-integrator",
       "license": "MIT",

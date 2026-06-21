@@ -4,13 +4,13 @@ description: "React hooks, context providers, components, sessions, messages & p
 tags: [react, useAgent, useAgentContext, AgentContextProvider, ToolRenderer, sessions, messages, MessagePart, textDeltaModifier, fullTextModifier, handleSend]
 ---
 
-# React API Reference (`bs-agent/react`)
+# React API Reference (`@buildship-ai/agent/react`)
 
 The React module provides hooks, context providers, and components for building chat UIs with full session management, client tool support, and debug panels.
 
 ```typescript
-import { AgentContextProvider, useAgent, useAgentContext, useClientTool, ToolRenderer } from "bs-agent/react";
-import { z } from "bs-agent/core";
+import { AgentContextProvider, useAgent, useAgentContext, useClientTool, ToolRenderer } from "@buildship-ai/agent/react";
+import { z } from "@buildship-ai/agent/core";
 ```
 
 ## Setup
@@ -18,7 +18,7 @@ import { z } from "bs-agent/core";
 Wrap your app (or the chat area) with `AgentContextProvider`:
 
 ```tsx
-import { AgentContextProvider } from "bs-agent/react";
+import { AgentContextProvider } from "@buildship-ai/agent/react";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
 The main hook for interacting with an agent. Manages messages, streaming, and sessions.
 
 ```tsx
-import { useAgent } from "bs-agent/react";
+import { useAgent } from "@buildship-ai/agent/react";
 
 function ChatPage() {
   const {
@@ -81,7 +81,7 @@ handleSend(input: AgentInput, options?: {
 An alternative to `useAgent` for multi-agent setups. Initializes agents declaratively and shares state through context.
 
 ```tsx
-import { useAgentContext } from "bs-agent/react";
+import { useAgentContext } from "@buildship-ai/agent/react";
 
 function ChatPage() {
   const agent = useAgentContext(
@@ -135,7 +135,7 @@ raw delta -> textDeltaModifier(delta) -> accumulated text -> fullTextModifier(ac
 
 `textDeltaModifier` acts as a per-chunk preprocessor; `fullTextModifier` acts as a post-accumulation formatter on top of the already-modified text.
 
-> **Note:** If `textDeltaModifier` strips or transforms content, `fullTextModifier` will only see the already-modified accumulation — the original unmodified stream text is not preserved.
+> **Note:** Both modifiers receive `meta.agentId`, which identifies the agent that produced the current event. In multi-agent setups, `fullTextModifier` only accumulates text from the **same agent's** trailing text group — text from earlier agents (before a handoff) is not included. If `textDeltaModifier` strips or transforms content, `fullTextModifier` will only see the already-modified accumulation — the original unmodified stream text is not preserved.
 
 ## Messages & Parts
 
@@ -150,7 +150,9 @@ type Message = {
   attachments?: Array<ImagePart | FilePart>;    // Multimodal user message attachments
 };
 
-type MessagePart =
+type MessagePart = {
+  agentId?: string;            // The agent that produced this part (changes after handoffs)
+} & (
   | { type: "text"; text: string; firstSequence: number; lastSequence: number }
   | {
       type: "widget";
@@ -175,8 +177,11 @@ type MessagePart =
     }
   | { type: "reasoning"; reasoning: string; index?: number }
   | { type: "handoff"; agentName: string }
-  | { type: "run_error"; message: string; code?: string };
+  | { type: "run_error"; message: string; code?: string }
+);
 ```
+
+Every part carries an optional `agentId` identifying which agent produced it. In multi-agent (handoff) scenarios, parts within the same message may have different `agentId` values — use this to group or label content by agent.
 
 > **Tip:** When rendering messages, iterate over `msg.parts` instead of `msg.content` to get text, widgets, tool calls, reasoning, handoffs, and errors interleaved in chronological order.
 

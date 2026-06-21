@@ -11,7 +11,7 @@ Client tools let the agent invoke functionality on the client side. They support
 ## Core API — registerClientTool
 
 ```typescript
-import { BuildShipAgent, z } from "bs-agent/core";
+import { BuildShipAgent, z } from "@buildship-ai/agent/core";
 
 const agent = new BuildShipAgent({ agentId: "..." });
 ```
@@ -90,8 +90,8 @@ if (session.isPaused()) {
 Register a tool that runs code without rendering any UI:
 
 ```tsx
-import { useClientTool } from "bs-agent/react";
-import { z } from "bs-agent/core";
+import { useClientTool } from "@buildship-ai/agent/react";
+import { z } from "@buildship-ai/agent/core";
 
 function ChatPage() {
   // Fire-and-forget
@@ -126,8 +126,8 @@ function ChatPage() {
 Register a tool that renders interactive UI inline in the conversation:
 
 ```tsx
-import { useClientTool, ToolRenderer } from "bs-agent/react";
-import { z } from "bs-agent/core";
+import { useClientTool, ToolRenderer } from "@buildship-ai/agent/react";
+import { z } from "@buildship-ai/agent/core";
 
 function ChatPage() {
   const { messages } = useAgent("agent-id", agentUrl);
@@ -209,6 +209,28 @@ useClientTool("agent-id", {
 
 > **Note:** With combo tools, the `submit` callback in render props is a no-op since the handler provides the result automatically. The widget is purely for display.
 
+### Scoping to Specific Agents
+
+In multi-agent setups, use `targetAgentIds` to restrict a tool to specific server-side agents or subagents. When omitted, the tool is available to all agents.
+
+```tsx
+// This tool is registered on the "agent-id" client instance,
+// but only the "support-agent" subagent on the server can use it.
+useClientTool("agent-id", {
+  name: "escalate_ticket",
+  description: "Escalate a support ticket to a human",
+  parameters: z.object({
+    ticketId: z.string(),
+    reason: z.string(),
+  }),
+  await: true,
+  handler: async (inputs) => {
+    return await escalateTicket(inputs.ticketId, inputs.reason);
+  },
+  targetAgentIds: ["support-agent-id"],
+});
+```
+
 ## Type Definitions
 
 ### ClientToolConfig
@@ -221,6 +243,7 @@ interface ClientToolConfig {
   await?: boolean;                       // If true, agent pauses until result
   handler?: (inputs: any) => any | Promise<any>; // For headless tools or combo tools
   render?: (props: ClientToolRenderProps) => any; // For widget tools or combo tools
+  targetAgentIds?: string[];             // If set, tool is only available to these agents/subagents
 }
 ```
 
@@ -238,9 +261,10 @@ interface ClientToolRenderProps<T = any> {
 
 ## Best Practices
 
-- Use Zod schemas for type-safe parameter definitions — the SDK re-exports `z` from `bs-agent/core`.
+- Use Zod schemas for type-safe parameter definitions — the SDK re-exports `z` from `@buildship-ai/agent/core`.
 - Use fire-and-forget tools (no `await`) for side effects like notifications or analytics that don't need to return data to the agent.
 - Use blocking tools (`await: true`) when the agent needs the result to continue its response.
 - Use manual pause/resume for user-facing confirmations where you need to show custom UI before proceeding.
 - Use combo tools (handler + render) for async operations where you want inline progress display.
+- Use `targetAgentIds` to scope tools to specific agents in multi-agent setups.
 - Always unregister tools with `unregisterClientTool(name)` when they are no longer needed to prevent stale tool registrations.

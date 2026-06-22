@@ -21,13 +21,13 @@ Use [skills](https://skills.sh/) to install skills directly:
 
 ```bash
 # Install all skills
-npx skills add buildship/agent-skills
+npx skills add buildship-ai/buildship-skills
 
 # Install specific skills
-npx skills add buildship/agent-skills --skill agent-integrator
+npx skills add buildship-ai/buildship-skills --skill agent-integrator
 
 # List available skills
-npx skills add buildship/agent-skills --list
+npx skills add buildship-ai/buildship-skills --list
 ```
 
 ### Claude Code Plugin
@@ -36,7 +36,7 @@ Install via Claude Code's plugin system:
 
 ```bash
 # Add the plugin (includes all skills)
-/plugin add buildship/agent-skills
+/plugin add buildship-ai/buildship-skills
 ```
 
 > Claude Code plugins are also supported in Factory's [Droid](https://docs.factory.ai/cli/configuration/plugins#claude-code-compatibility).
@@ -47,10 +47,10 @@ Agent skills can also be installed by using the below commands from [Playbooks](
 
 ```bash
 # Playbooks
-npx playbooks add skill buildship/agent-skills
+npx playbooks add skill buildship-ai/buildship-skills
 
 # Context7
-npx ctx7 skills install /buildship/agent-skills
+npx ctx7 skills install /buildship-ai/buildship-skills
 ```
 
 ## Adding New Skills

@@ -1,4 +1,4 @@
-# buildship Agent Skills
+# Buildship Agent Skills
 
 This repository contains a collection of agent skills for buildship. These skills are designed to enhance the capabilities of agents by providing them with specialized functionalities.
 
